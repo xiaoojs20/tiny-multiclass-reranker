@@ -1,0 +1,41 @@
+2025-12-08 18:12:55.035669: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:12:55.097945: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:12:56.261176: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B-Base
+Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/utils/hub.py", line 479, in cached_files
+    hf_hub_download(
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '../llms/Qwen/Qwen3-0.6B-Base'. Use `repo_type` argument if needed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 150, in <module>
+    main()
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 57, in main
+    tokenizer = AutoTokenizer.from_pretrained(args.base_model, padding_side="left")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1089, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 921, in get_tokenizer_config
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/utils/hub.py", line 322, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/utils/hub.py", line 532, in cached_files
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision, repo_type)
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/utils/hub.py", line 143, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '../llms/Qwen/Qwen3-0.6B-Base'. Use `repo_type` argument if needed.
