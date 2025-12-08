@@ -5,24 +5,24 @@ set -euo pipefail
 # 基本路径与模型设置
 ########################
 
-# 基座模型（和 Qwen3-Reranker 一样，从 Base 起步）
-BASE_MODEL="../llms/Qwen/Qwen3-0.6B-Base"
+export NCCL_P2P_DISABLE=1
+export NCCL_IB_DISABLE=1
+export CUDA_VISIBLE_DEVICES=0,1
 
-# 你的 ESCI parquet 路径
+BASE_MODEL="../llms/Qwen/Qwen3-0.6B"
 TRAIN_FILE="../datasets/esci-data/esci_multiclass_train.parquet"
 EVAL_FILE="../datasets/esci-data/esci_multiclass_test.parquet"
 
-# 微调输出（LoRA adapter）目录
 OUTPUT_DIR="./outputs/qwen3_esci_reranker_lora"
 
 ########################
-# 训练超参数（按需改）
+# 训练超参数
 ########################
 
-MAX_LEN=2048
-BATCH_SIZE=4
-GRAD_ACCUM=8
-EPOCHS=2
+MAX_LEN=512
+BATCH_SIZE=8
+GRAD_ACCUM=4
+EPOCHS=1
 LR=2e-4
 WARMUP=0.03
 LOGGING_STEPS=50
@@ -30,12 +30,9 @@ SAVE_STEPS=2000
 SAVE_TOTAL_LIMIT=2
 
 # LoRA 超参
-LORA_R=16
-LORA_ALPHA=32
+LORA_R=8
+LORA_ALPHA=16
 LORA_DROPOUT=0.05
-
-# 哪张卡训练
-export CUDA_VISIBLE_DEVICES=0
 
 ########################
 # 训练

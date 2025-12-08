@@ -6,13 +6,15 @@ import torch
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizerBase
 
+# https://github.com/amazon-science/esci-data
+
 # 可选的商品文本列（按需要自己调）
 TEXT_COLS: List[str] = [
     "product_title",
-    "product_description",
-    "product_bullet_point",
-    "product_brand",
-    "product_color",
+    # "product_description",
+    # "product_bullet_point",
+    # "product_brand",
+    # "product_color",
 ]
 
 # ESCI 四档 label -> 文本答案
@@ -54,6 +56,7 @@ def build_item_text(row: pd.Series) -> str:
         if isinstance(val, str) and val.strip():
             parts.append(val)
     return "\n".join(parts)
+
 
 
 def load_esci_parquet(path: str) -> pd.DataFrame:

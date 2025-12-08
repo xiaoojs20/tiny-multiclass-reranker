@@ -39,3 +39,310 @@ Traceback (most recent call last):
   File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
     raise HFValidationError(
 huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '../llms/Qwen/Qwen3-0.6B-Base'. Use `repo_type` argument if needed.
+Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 13, in <module>
+    from peft import LoraConfig, get_peft_model, TaskType
+ModuleNotFoundError: No module named 'peft'
+2025-12-08 18:21:49.492681: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:21:49.558619: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:21:53.111335: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 10,092,544 || all params: 606,142,464 || trainable%: 1.6650
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 150, in <module>
+    main()
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 119, in main
+    training_args = TrainingArguments(
+                    ^^^^^^^^^^^^^^^^^^
+  File "<string>", line 135, in __init__
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/training_args.py", line 1811, in __post_init__
+    self.device
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/training_args.py", line 2355, in device
+    return self._setup_devices
+           ^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/functools.py", line 993, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/training_args.py", line 2282, in _setup_devices
+    self.distributed_state = PartialState(**accelerator_state_kwargs)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/accelerate/state.py", line 313, in __init__
+    raise NotImplementedError(
+NotImplementedError: Using RTX 4000 series doesn't support faster communication broadband via P2P or IB. Please set `NCCL_P2P_DISABLE="1"` and `NCCL_IB_DISABLE="1" or use `accelerate launch` which will do this automatically.
+2025-12-08 18:29:11.482084: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:29:11.541841: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:29:12.742210: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+`torch_dtype` is deprecated! Use `dtype` instead!
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 10,092,544 || all params: 606,142,464 || trainable%: 1.6650
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/123956 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 150, in <module>
+    main()
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 141, in main
+    trainer.train()
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 4110, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/accelerate/utils/operations.py", line 819, in forward
+    return model_forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/accelerate/utils/operations.py", line 807, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/amp/autocast_mode.py", line 44, in decorate_autocast
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/peft/peft_model.py", line 1923, in forward
+    return self.base_model(
+           ^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/peft/tuners/tuners_utils.py", line 308, in forward
+    return self.model.forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 498, in forward
+    loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 55, in ForCausalLMLoss
+    logits = logits.float()
+             ^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.64 GiB. GPU 0 has a total capacity of 23.65 GiB of which 3.50 GiB is free. Including non-PyTorch memory, this process has 20.08 GiB memory in use. Of the allocated memory 19.57 GiB is allocated by PyTorch, and 61.17 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+  0%|          | 0/123956 [00:03<?, ?it/s]
+2025-12-08 18:33:01.206944: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:33:01.265019: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:33:02.427319: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 10,092,544 || all params: 606,142,464 || trainable%: 1.6650
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/61978 [00:00<?, ?it/s]  0%|          | 1/61978 [00:11<197:07:55, 11.45s/it]  0%|          | 2/61978 [00:20<175:19:51, 10.18s/it]  0%|          | 3/61978 [00:29<165:41:25,  9.62s/it]  0%|          | 4/61978 [00:38<162:41:50,  9.45s/it]  0%|          | 5/61978 [00:47<159:11:48,  9.25s/it]  0%|          | 6/61978 [00:56<158:51:58,  9.23s/it]  0%|          | 7/61978 [01:05<157:42:58,  9.16s/it]  0%|          | 8/61978 [01:15<157:59:15,  9.18s/it]  0%|          | 9/61978 [01:24<157:17:57,  9.14s/it]  0%|          | 10/61978 [01:33<157:50:18,  9.17s/it]  0%|          | 11/61978 [01:42<158:08:52,  9.19s/it]  0%|          | 12/61978 [01:51<157:13:33,  9.13s/it]  0%|          | 13/61978 [02:00<157:32:02,  9.15s/it]  0%|          | 14/61978 [02:09<156:28:55,  9.09s/it]  0%|          | 15/61978 [02:19<156:52:40,  9.11s/it]  0%|          | 16/61978 [02:27<155:50:40,  9.05s/it]  0%|          | 17/61978 [02:37<156:08:55,  9.07s/it]  0%|          | 18/61978 [02:46<155:40:47,  9.05s/it]  0%|          | 19/61978 [02:55<156:36:35,  9.10s/it]  0%|          | 20/61978 [03:04<155:32:56,  9.04s/it]  0%|          | 21/61978 [03:13<156:31:59,  9.10s/it]  0%|          | 22/61978 [03:22<156:53:59,  9.12s/it]  0%|          | 23/61978 [03:31<155:47:04,  9.05s/it]  0%|          | 24/61978 [03:40<156:38:21,  9.10s/it]  0%|          | 25/61978 [03:49<155:42:04,  9.05s/it]  0%|          | 26/61978 [03:58<156:12:45,  9.08s/it]  0%|          | 27/61978 [04:07<155:24:58,  9.03s/it]  0%|          | 28/61978 [04:16<156:25:51,  9.09s/it]  0%|          | 29/61978 [04:25<155:21:45,  9.03s/it]  0%|          | 30/61978 [04:34<155:52:22,  9.06s/it]  0%|          | 31/61978 [04:43<155:08:58,  9.02s/it]  0%|          | 32/61978 [04:53<156:11:37,  9.08s/it]已终止
+2025-12-08 18:41:27.991662: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:41:28.054064: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:41:29.221521: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 5,046,272 || all params: 601,096,192 || trainable%: 0.8395
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/61978 [00:00<?, ?it/s]  0%|          | 1/61978 [00:08<147:08:23,  8.55s/it]  0%|          | 2/61978 [00:16<137:25:18,  7.98s/it]  0%|          | 3/61978 [00:23<130:56:42,  7.61s/it]  0%|          | 4/61978 [00:30<128:19:31,  7.45s/it]  0%|          | 5/61978 [00:37<125:19:36,  7.28s/it]  0%|          | 6/61978 [00:44<124:57:58,  7.26s/it]  0%|          | 7/61978 [00:51<122:57:14,  7.14s/it]  0%|          | 8/61978 [00:58<123:17:06,  7.16s/it]  0%|          | 9/61978 [01:05<122:32:34,  7.12s/it]  0%|          | 10/61978 [01:13<123:09:48,  7.16s/it]  0%|          | 11/61978 [01:20<123:30:25,  7.18s/it]已终止
+2025-12-08 18:43:34.905722: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:43:34.964127: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:43:36.175573: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 1,146,880 || all params: 597,196,800 || trainable%: 0.1920
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/61978 [00:00<?, ?it/s]  0%|          | 1/61978 [00:06<113:37:58,  6.60s/it]  0%|          | 2/61978 [00:11<98:33:04,  5.72s/it]   0%|          | 3/61978 [00:16<91:22:55,  5.31s/it]  0%|          | 4/61978 [00:21<89:10:33,  5.18s/it]  0%|          | 5/61978 [00:26<87:37:34,  5.09s/it]  0%|          | 6/61978 [00:31<85:28:55,  4.97s/it]  0%|          | 7/61978 [00:36<85:53:32,  4.99s/it]已终止
+2025-12-08 18:44:54.005852: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:44:54.064538: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:44:55.199232: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 1,146,880 || all params: 597,196,800 || trainable%: 0.1920
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/61978 [00:00<?, ?it/s]  0%|          | 1/61978 [00:04<75:14:14,  4.37s/it]  0%|          | 2/61978 [00:07<57:58:48,  3.37s/it]  0%|          | 3/61978 [00:09<52:31:07,  3.05s/it]  0%|          | 4/61978 [00:12<51:16:08,  2.98s/it]  0%|          | 5/61978 [00:15<49:31:06,  2.88s/it]  0%|          | 6/61978 [00:17<48:16:00,  2.80s/it]  0%|          | 7/61978 [00:20<48:38:28,  2.83s/it]  0%|          | 8/61978 [00:23<47:44:05,  2.77s/it]  0%|          | 9/61978 [00:26<47:09:27,  2.74s/it]  0%|          | 10/61978 [00:29<47:56:16,  2.78s/it]  0%|          | 11/61978 [00:31<47:17:20,  2.75s/it]  0%|          | 12/61978 [00:34<46:41:41,  2.71s/it]  0%|          | 13/61978 [00:37<47:49:07,  2.78s/it]  0%|          | 14/61978 [00:39<47:08:12,  2.74s/it]  0%|          | 15/61978 [00:42<46:48:22,  2.72s/it]  0%|          | 16/61978 [00:45<46:31:35,  2.70s/it]  0%|          | 17/61978 [00:48<47:43:15,  2.77s/it]  0%|          | 18/61978 [00:50<47:04:02,  2.73s/it]  0%|          | 19/61978 [00:53<46:47:48,  2.72s/it]  0%|          | 20/61978 [00:56<47:32:59,  2.76s/it]  0%|          | 21/61978 [00:59<46:58:17,  2.73s/it]  0%|          | 22/61978 [01:01<46:39:07,  2.71s/it]  0%|          | 23/61978 [01:04<47:35:10,  2.77s/it]  0%|          | 24/61978 [01:07<47:07:42,  2.74s/it]  0%|          | 25/61978 [01:09<46:50:13,  2.72s/it]  0%|          | 26/61978 [01:12<47:42:15,  2.77s/it]  0%|          | 27/61978 [01:15<47:10:07,  2.74s/it]  0%|          | 28/61978 [01:18<47:05:00,  2.74s/it]  0%|          | 29/61978 [01:21<47:53:28,  2.78s/it]  0%|          | 30/61978 [01:23<47:22:53,  2.75s/it]  0%|          | 31/61978 [01:26<46:56:18,  2.73s/it]已终止
+2025-12-08 18:47:03.365457: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:47:03.423594: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:47:04.600021: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 1,146,880 || all params: 597,196,800 || trainable%: 0.1920
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/61978 [00:00<?, ?it/s]  0%|          | 1/61978 [00:03<59:06:21,  3.43s/it]  0%|          | 2/61978 [00:05<41:28:50,  2.41s/it]  0%|          | 3/61978 [00:06<35:50:50,  2.08s/it]  0%|          | 4/61978 [00:08<33:15:44,  1.93s/it]  0%|          | 5/61978 [00:10<32:01:20,  1.86s/it]  0%|          | 6/61978 [00:11<31:13:16,  1.81s/it]  0%|          | 7/61978 [00:13<31:58:43,  1.86s/it]  0%|          | 8/61978 [00:15<31:07:16,  1.81s/it]  0%|          | 9/61978 [00:17<30:33:33,  1.78s/it]  0%|          | 10/61978 [00:19<30:14:08,  1.76s/it]  0%|          | 11/61978 [00:20<29:54:52,  1.74s/it]  0%|          | 12/61978 [00:22<29:46:36,  1.73s/it]  0%|          | 13/61978 [00:24<30:54:30,  1.80s/it]  0%|          | 14/61978 [00:26<30:27:13,  1.77s/it]  0%|          | 15/61978 [00:27<30:07:03,  1.75s/it]  0%|          | 16/61978 [00:29<29:54:25,  1.74s/it]  0%|          | 17/61978 [00:31<29:45:05,  1.73s/it]  0%|          | 18/61978 [00:32<29:31:58,  1.72s/it]  0%|          | 19/61978 [00:34<29:29:08,  1.71s/it]已终止
+2025-12-08 18:49:54.108096: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:49:54.165716: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:49:55.310739: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 1,146,880 || all params: 597,196,800 || trainable%: 0.1920
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/30989 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 149, in <module>
+    main()
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 140, in main
+    trainer.train()
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 4020, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 4110, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/parallel/data_parallel.py", line 193, in forward
+    outputs = self.parallel_apply(replicas, inputs, module_kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/parallel/data_parallel.py", line 212, in parallel_apply
+    return parallel_apply(
+           ^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 126, in parallel_apply
+    output.reraise()
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/_utils.py", line 715, in reraise
+    raise exception
+torch.OutOfMemoryError: Caught OutOfMemoryError in replica 0 on device 0.
+Original Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/peft/peft_model.py", line 1923, in forward
+    return self.base_model(
+           ^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/peft/tuners/tuners_utils.py", line 308, in forward
+    return self.model.forward(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 498, in forward
+    loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 67, in ForCausalLMLoss
+    loss = fixed_cross_entropy(logits, shift_labels, num_items_in_batch, ignore_index, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/loss/loss_utils.py", line 36, in fixed_cross_entropy
+    loss = nn.functional.cross_entropy(source, target, ignore_index=ignore_index, reduction=reduction)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/nn/functional.py", line 3479, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.64 GiB. GPU 0 has a total capacity of 23.65 GiB of which 2.24 GiB is free. Including non-PyTorch memory, this process has 21.35 GiB memory in use. Of the allocated memory 20.39 GiB is allocated by PyTorch, and 414.17 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+  0%|          | 0/30989 [00:02<?, ?it/s]
+2025-12-08 18:50:56.146632: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:50:56.208119: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:50:57.332208: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 1,146,880 || all params: 597,196,800 || trainable%: 0.1920
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/20660 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 149, in <module>
+    main()
+  File "/mnt/sdb1/sdb1_xiaojinsong/tiny-reranker/train.py", line 140, in main
+    trainer.train()
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 2325, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/transformers/trainer.py", line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/accelerate/accelerator.py", line 2852, in backward
+    loss.backward(**kwargs)
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/autograd/__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "/mnt/sdb1/sdb1_xiaojinsong/miniconda3/envs/llm/lib/python3.12/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.48 GiB. GPU 0 has a total capacity of 23.65 GiB of which 2.05 GiB is free. Including non-PyTorch memory, this process has 21.54 GiB memory in use. Of the allocated memory 16.62 GiB is allocated by PyTorch, and 4.35 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+  0%|          | 0/20660 [00:03<?, ?it/s]
+2025-12-08 18:52:06.702803: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-08 18:52:06.763608: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-08 18:52:07.870400: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Loading tokenizer from: ../llms/Qwen/Qwen3-0.6B
+Loading base model from: ../llms/Qwen/Qwen3-0.6B
+Applying LoRA...
+trainable params: 1,146,880 || all params: 597,196,800 || trainable%: 0.1920
+Loading train data from: ../datasets/esci-data/esci_multiclass_train.parquet
+Train size: 1983272
+Loading eval data from: ../datasets/esci-data/esci_multiclass_test.parquet
+Eval size: 638016
+  0%|          | 0/30989 [00:00<?, ?it/s]  0%|          | 1/30989 [00:03<29:32:30,  3.43s/it]  0%|          | 2/30989 [00:05<20:49:07,  2.42s/it]  0%|          | 3/30989 [00:06<18:00:50,  2.09s/it]  0%|          | 4/30989 [00:08<16:43:24,  1.94s/it]  0%|          | 5/30989 [00:10<15:57:39,  1.85s/it]  0%|          | 6/30989 [00:11<15:33:01,  1.81s/it]  0%|          | 7/30989 [00:13<15:58:34,  1.86s/it]  0%|          | 8/30989 [00:15<15:32:36,  1.81s/it]  0%|          | 9/30989 [00:17<15:16:00,  1.77s/it]  0%|          | 10/30989 [00:19<15:04:42,  1.75s/it]  0%|          | 11/30989 [00:20<14:56:44,  1.74s/it]  0%|          | 12/30989 [00:22<14:52:10,  1.73s/it]

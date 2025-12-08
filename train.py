@@ -25,7 +25,6 @@ def parse_args():
     parser.add_argument("--train_file", type=str, required=True)
     parser.add_argument("--eval_file", type=str, required=True)
     parser.add_argument("--output_dir", type=str, required=True)
-
     parser.add_argument("--max_length", type=int, default=2048)
     parser.add_argument("--per_device_train_batch_size", type=int, default=4)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=8)
@@ -62,8 +61,8 @@ def main():
     dtype = torch.bfloat16 if args.bf16 else torch.float16
 
     model_kwargs = {
-        "torch_dtype": dtype,
-        "device_map": "auto",
+        "dtype": dtype,
+        # "device_map": "auto",
     }
     if not args.no_flash_attn:
         # 如果版本不支持，可删除这一行或改成 attn_implementation="eager"
@@ -84,12 +83,12 @@ def main():
         lora_dropout=args.lora_dropout,
         target_modules=[
             "q_proj",
-            "k_proj",
+            # "k_proj",
             "v_proj",
-            "o_proj",
-            "gate_proj",
-            "up_proj",
-            "down_proj",
+            # "o_proj",
+            # "gate_proj",
+            # "up_proj",
+            # "down_proj",
         ],
         task_type=TaskType.CAUSAL_LM,
         bias="none",
