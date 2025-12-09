@@ -210,7 +210,7 @@ class ESCIEmbClassifierDataset(Dataset):
     """
     用于单塔分类头训练的 ESCI Dataset：
     - 输入：query + item_text（可以继续用 Qwen3-reranker 风格的 prompt）
-    - 输出：input_ids, attention_mask, label_id (0~3)
+    - 输出：input_ids, attention_mask, label_id
     """
     def __init__(
         self,
