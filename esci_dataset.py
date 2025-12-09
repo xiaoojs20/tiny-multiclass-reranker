@@ -18,13 +18,22 @@ TEXT_COLS: List[str] = [
     # "product_color",
 ]
 
-# ESCI 4 rel label -> label text
+# Reranker: ESCI 4 rel label -> label text
 LABEL_TEXT: Dict[str, str] = {
     "E": "exact",
     "S": "substitute",
     "C": "complement",
     "I": "irrelevant",
 }
+# Emb-Classifier: ESCI 4 rel label -> id
+LABEL2ID = {
+    "E": 0,  # exact
+    "S": 1,  # substitute
+    "C": 2,  # complement
+    "I": 3,  # irrelevant
+}
+ID2LABEL = {v: k for k, v in LABEL2ID.items()}
+
 
 # Qwen3-reranker style prompt
 SYSTEM_PROMPT: str = (
@@ -194,3 +203,72 @@ class ESCIMultiClassRerankDataset(Dataset):
             "attention_mask": torch.tensor(attention_mask, dtype=torch.long),
             "labels": torch.tensor(labels, dtype=torch.long),
         }
+
+
+
+class ESCIEmbClassifierDataset(Dataset):
+    """
+    用于单塔分类头训练的 ESCI Dataset：
+    - 输入：query + item_text（可以继续用 Qwen3-reranker 风格的 prompt）
+    - 输出：input_ids, attention_mask, label_id (0~3)
+    """
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        tokenizer: PreTrainedTokenizerBase,
+        max_length: int = 2048,
+        use_chat_prompt: bool = True,
+    ):
+        self.df = df.reset_index(drop=True)
+        self.tokenizer = tokenizer
+        self.max_length = max_length
+        self.use_chat_prompt = use_chat_prompt
+
+        if use_chat_prompt:
+            # 和 reranker 一致的 system+user 包装
+            self.prefix = (
+                "<|im_start|>system\n"
+                + SYSTEM_PROMPT +
+                "<|im_end|>\n<|im_start|>user\n"
+            )
+            self.suffix = "<|im_end|>\n<|im_start|>assistant\n"
+            # 这里只需要 assistant 开头，不再拼 label 文本
+        else:
+            self.prefix = ""
+            self.suffix = ""
+
+    def __len__(self) -> int:
+        return len(self.df)
+
+    def __getitem__(self, idx: int):
+        row = self.df.iloc[idx]
+        query = row["query"]
+        doc = row["item_text"]
+        label_key = row["esci_label"]
+
+        if label_key not in LABEL2ID:
+            raise ValueError(f"Unexpected esci_label: {label_key}")
+
+        label_id = LABEL2ID[label_key]
+
+        body_text = format_instruction(query=query, doc=doc)
+
+        full_text = self.prefix + body_text + self.suffix
+
+        encoded = self.tokenizer(
+            full_text,
+            add_special_tokens=True,
+            truncation=True,
+            max_length=self.max_length,
+            padding="max_length",
+            return_tensors="pt",
+        )
+
+        return {
+            "input_ids": encoded["input_ids"][0],
+            "attention_mask": encoded["attention_mask"][0],
+            "labels": torch.tensor(label_id, dtype=torch.long),
+        }
+
+
+

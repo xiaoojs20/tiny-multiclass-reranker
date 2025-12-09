@@ -1,5 +1,6 @@
 __pycache__/
 outputs/
+logs/
 nohup.out
 *.ckpt
 *.pt

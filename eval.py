@@ -179,7 +179,6 @@ def main():
         preds = [id2label[i] for i in pred_idx] # 四分类的预测标签
 
         # print(f"class_logits: {class_logits}")
-        
         # print(f"probs_vocab: {probs_vocab}")
         # print(f"probs: {probs}")
         # print(f"preds: {preds}")
