@@ -1,19 +1,4 @@
-# train_cls.py
-"""
-python train_cls.py \
-  --base_model ../llms/Qwen/Qwen3-Embedding-0.6B \
-  --train_file ../datasets/esci-data/esci_multiclass_train.parquet \
-  --output_dir ./outputs/emb_esci_cls \
-  --max_length 512 \
-  --per_device_train_batch_size 1 \
-  --gradient_accumulation_steps 1 \
-  --num_train_epochs 1.0 \
-  --learning_rate 1e-4 \
-  --bf16 \
-  --report_to wandb \
-  --wandb_project esci-emb-cls \
-  --wandb_run_name qwen3-emb-0.6b-esci-lora-qv
-"""
+# train_emb_cls.py
 import argparse
 from pathlib import Path
 import os
@@ -147,7 +132,7 @@ def main():
         if p.requires_grad:
             print("trainable:", n, p.shape)
 
-    exit()
+    # exit()
 
     # ===== Data =====
     print(f"Loading train data from: {args.train_file}")
@@ -205,10 +190,10 @@ def main():
     save_total_limit = None if args.save_total_limit < 0 else args.save_total_limit
 
     if eval_dataset is not None:
-        evaluation_strategy = "steps"
+        eval_strategy = "steps"
         eval_steps = args.eval_steps
     else:
-        evaluation_strategy = "no"
+        eval_strategy = "no"
         eval_steps = None
 
     # ===== TrainingArguments =====
@@ -228,7 +213,7 @@ def main():
         report_to=report_to,
         logging_dir=logging_dir,
         run_name=args.wandb_run_name,
-        evaluation_strategy=evaluation_strategy,
+        eval_strategy=eval_strategy,
         eval_steps=eval_steps,
         load_best_model_at_end=True if eval_dataset is not None else False,
         metric_for_best_model="eval_loss",

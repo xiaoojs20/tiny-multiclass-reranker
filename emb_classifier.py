@@ -25,7 +25,9 @@ class QwenEmbeddingClassifier(nn.Module):
         self.encoder = encoder
         hidden_size = encoder.config.hidden_size
         self.dropout = nn.Dropout(dropout)
-        self.classifier = nn.Linear(hidden_size, num_labels)
+        # 关键：拿 encoder 的 dtype
+        encoder_dtype = next(encoder.parameters()).dtype
+        self.classifier = nn.Linear(hidden_size, num_labels, dtype=encoder_dtype)
 
         # # === 1. 冻结 encoder 所有参数 ===
         # for p in self.encoder.parameters():
