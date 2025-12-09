@@ -79,13 +79,13 @@ def inspect_sample(
     print(f"Sample index: {idx}")
     row = df.iloc[idx]
 
-    # 1. 打印原始信息
+    # 1. 原始信息
     print("\n[RAW ROW]")
     print(f"query      : {row['query']}")
     print(f"esci_label : {row['esci_label']} (mapped to text: {LABEL_TEXT.get(row['esci_label'], 'UNKNOWN')})")
     print(f"item_text  : {row['item_text'][:300]}{'...' if len(row['item_text']) > 300 else ''}")
 
-    # 2. 取 dataset 中构造好的 input_ids / attention_mask / labels
+    # 2. dataset 中构造好的 input_ids / attention_mask / labels
     sample = dataset[idx]
     input_ids: torch.Tensor = sample["input_ids"]
     attention_mask: torch.Tensor = sample["attention_mask"]
@@ -113,7 +113,7 @@ def inspect_sample(
     )
     print(decoded)
 
-    # 4. 打印 label 区间对应的 token（真正算 loss 的部分）
+    # 4. 打印 label 区间对应的 token
     print("\n[LABEL POSITIONS (where labels != -100)]")
     label_positions: torch.Tensor = (labels != -100).nonzero(as_tuple=False).view(-1)
     if len(label_positions) == 0:

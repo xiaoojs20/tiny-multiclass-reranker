@@ -6,9 +6,10 @@ import torch
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizerBase
 
+# ESCI 数据集
 # https://github.com/amazon-science/esci-data
 
-# 可选的商品文本列（按需要自己调）
+# Item text cols
 TEXT_COLS: List[str] = [
     "product_title",
     # "product_description",
@@ -17,7 +18,7 @@ TEXT_COLS: List[str] = [
     # "product_color",
 ]
 
-# ESCI 四档 label -> 文本答案
+# ESCI 4 rel label -> label text
 LABEL_TEXT: Dict[str, str] = {
     "E": "exact",
     "S": "substitute",
@@ -25,10 +26,10 @@ LABEL_TEXT: Dict[str, str] = {
     "I": "irrelevant",
 }
 
-# system / instruct，用于构造和 Qwen3-reranker 风格一致的 prompt
+# Qwen3-reranker style prompt
 SYSTEM_PROMPT: str = (
     "You are an expert e-commerce search relevance judge. "
-    "Given a user search query and a candidate product (Document), "
+    "Given a user search query and a candidate product / item, "
     "classify the relevance into one of the following categories:\n"
     "- exact: the product exactly matches the query intent;\n"
     "- substitute: the product can be used instead of what is requested;\n"
@@ -37,7 +38,7 @@ SYSTEM_PROMPT: str = (
 )
 
 INSTRUCT: str = (
-    "Given a shopping query and a candidate product, "
+    "Given a shopping query and a candidate product / item, "
     "classify their relevance into one of: exact, substitute, complement, or irrelevant."
 )
 
@@ -58,7 +59,6 @@ def build_item_text(row: pd.Series) -> str:
     return "\n".join(parts)
 
 
-
 def load_esci_parquet(path: str) -> pd.DataFrame:
     """
     读取 parquet，并确保有三列：
@@ -69,7 +69,6 @@ def load_esci_parquet(path: str) -> pd.DataFrame:
     df = pd.read_parquet(path)
     if "query" not in df.columns:
         raise ValueError("Expected column 'query' in parquet file.")
-
     if "esci_label" not in df.columns:
         raise ValueError("Expected column 'esci_label' in parquet file.")
     df = df.copy()
@@ -97,7 +96,6 @@ class ESCIMultiClassRerankDataset(Dataset):
     - input_ids: prefix + body + suffix + label + eos
     - labels: 只有 label 对应 token 位置是真实 id，其余为 -100（不算 loss）
     """
-
     def __init__(
         self,
         df: pd.DataFrame,

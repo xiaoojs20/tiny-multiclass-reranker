@@ -23,7 +23,9 @@ def parse_args():
 
     parser.add_argument("--base_model", type=str, required=True)
     parser.add_argument("--train_file", type=str, required=True)
-    parser.add_argument("--eval_file", type=str, required=True)
+    # parser.add_argument("--eval_file", type=str, required=True)
+    parser.add_argument("--eval_ratio", type=float, default=0.05,
+                        help="Ratio of training data to use as eval set (e.g. 0.05 for 5%)")
     parser.add_argument("--output_dir", type=str, required=True)
     parser.add_argument("--max_length", type=int, default=2048)
     parser.add_argument("--per_device_train_batch_size", type=int, default=4)
@@ -39,11 +41,33 @@ def parse_args():
     parser.add_argument("--no_flash_attn", action="store_true")
     parser.add_argument("--gradient_checkpointing", action="store_true")
 
-    # LoRA 超参
+    # LoRA
     parser.add_argument("--lora_r", type=int, default=16)
     parser.add_argument("--lora_alpha", type=int, default=32)
     parser.add_argument("--lora_dropout", type=float, default=0.05)
 
+    parser.add_argument("--seed", type=int, default=42)
+
+    # Logging & reporting
+    parser.add_argument(
+        "--report_to",
+        type=str,
+        default="none",
+        choices=["none", "wandb"],
+        help='Where to report training logs. Use "wandb" to enable Weights & Biases logging.',
+    )
+    parser.add_argument(
+        "--wandb_project",
+        type=str,
+        default=None,
+        help="Wandb project name. If None, will use WANDB_PROJECT env var if set.",
+    )
+    parser.add_argument(
+        "--wandb_run_name",
+        type=str,
+        default=None,
+        help="Wandb run name (also used as TrainingArguments.run_name).",
+    )
     return parser.parse_args()
 
 
@@ -100,20 +124,64 @@ def main():
     df_train = load_esci_parquet(args.train_file)
     print(f"Train size: {len(df_train)}")
 
-    print(f"Loading eval data from: {args.eval_file}")
-    df_eval = load_esci_parquet(args.eval_file)
-    print(f"Eval size: {len(df_eval)}")
+    # print(f"Loading eval data from: {args.eval_file}")
+    # df_eval = load_esci_parquet(args.eval_file)
+    # print(f"Eval size: {len(df_eval)}")
+
+    # 从train data里划分一部分作为eval set
+    df_all = df_train
+
+    eval_ratio = args.eval_ratio
+    if not (0.0 <= eval_ratio < 1.0):
+        raise ValueError(f"eval_ratio must be in [0,1), got {eval_ratio}")
+
+    if eval_ratio > 0.0:
+        # 简单随机划分
+        df_all_shuffled = df_all.sample(frac=1.0, random_state=args.seed).reset_index(drop=True)
+        eval_size = int(len(df_all_shuffled) * eval_ratio)
+        if eval_size == 0:
+            # 数据太少时保护一下
+            print(f"[Warn] eval_ratio={eval_ratio} but dataset is small, eval_size=0. "
+                  f"Disable eval and use all data for training.")
+            df_train = df_all_shuffled
+            df_eval = None
+        else:
+            df_eval = df_all_shuffled.iloc[:eval_size].reset_index(drop=True)
+            df_train = df_all_shuffled.iloc[eval_size:].reset_index(drop=True)
+    else:
+        df_train = df_all
+        df_eval = None
+
+    print(f"Train size: {len(df_train)}")
+    if df_eval is not None:
+        print(f"Eval size:  {len(df_eval)}")
+    else:
+        print("Eval disabled (no eval split).")
+
 
     train_dataset = ESCIMultiClassRerankDataset(
         df_train,
         tokenizer=tokenizer,
         max_length=args.max_length,
     )
-    eval_dataset = ESCIMultiClassRerankDataset(
-        df_eval,
-        tokenizer=tokenizer,
-        max_length=args.max_length,
-    )
+    # eval_dataset = ESCIMultiClassRerankDataset(
+    #     df_eval,
+    #     tokenizer=tokenizer,
+    #     max_length=args.max_length,
+    # )
+
+    eval_dataset = None
+    if df_eval is not None:
+        eval_dataset = ESCIMultiClassRerankDataset(
+            df_eval,
+            tokenizer=tokenizer,
+            max_length=args.max_length,
+        )
+
+
+    # ========= TrainingArguments =========
+    report_to = args.report_to
+    logging_dir = str(output_dir / "logs")
 
     training_args = TrainingArguments(
         output_dir=str(output_dir),
@@ -127,7 +195,9 @@ def main():
         save_steps=args.save_steps,
         save_total_limit=args.save_total_limit,
         bf16=args.bf16,
-        report_to="none",
+        report_to=report_to,
+        logging_dir=logging_dir,
+        run_name=args.wandb_run_name,
     )
 
     trainer = Trainer(
@@ -147,3 +217,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

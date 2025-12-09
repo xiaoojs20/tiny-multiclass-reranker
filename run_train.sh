@@ -12,12 +12,8 @@ export CUDA_VISIBLE_DEVICES=0,1
 BASE_MODEL="../llms/Qwen/Qwen3-0.6B"
 TRAIN_FILE="../datasets/esci-data/esci_multiclass_train.parquet"
 EVAL_FILE="../datasets/esci-data/esci_multiclass_test.parquet"
-
 OUTPUT_DIR="./outputs/qwen3_esci_reranker_lora"
 
-########################
-# 训练超参数
-########################
 
 MAX_LEN=512
 BATCH_SIZE=8
@@ -34,14 +30,15 @@ LORA_R=8
 LORA_ALPHA=16
 LORA_DROPOUT=0.05
 
-########################
-# 训练
-########################
+wandb_project="qwen3-multiclass-reranker"
+wandb_run_name="qwen3-esci-lora-v1"
+
+# --eval_file "$EVAL_FILE" \
 
 python train.py \
   --base_model "$BASE_MODEL" \
   --train_file "$TRAIN_FILE" \
-  --eval_file "$EVAL_FILE" \
+  --eval_ratio 0.05 \
   --output_dir "$OUTPUT_DIR" \
   --max_length $MAX_LEN \
   --per_device_train_batch_size $BATCH_SIZE \
@@ -55,15 +52,7 @@ python train.py \
   --lora_r $LORA_R \
   --lora_alpha $LORA_ALPHA \
   --lora_dropout $LORA_DROPOUT \
-  --bf16
-
-########################
-# 评估
-########################
-
-python eval.py \
-  --base_model "$BASE_MODEL" \
-  --lora_model "$OUTPUT_DIR" \
-  --eval_file "$EVAL_FILE" \
-  --max_length $MAX_LEN \
-  --batch_size 16
+  --bf16 \
+  --report_to wandb \
+  --wandb_project $wandb_project \
+  --wandb_run_name $wandb_run_name
