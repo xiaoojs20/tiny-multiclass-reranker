@@ -217,7 +217,7 @@ class ESCIEmbClassifierDataset(Dataset):
         df: pd.DataFrame,
         tokenizer: PreTrainedTokenizerBase,
         max_length: int = 2048,
-        use_chat_prompt: bool = True,
+        use_chat_prompt: bool = False,
     ):
         self.df = df.reset_index(drop=True)
         self.tokenizer = tokenizer
@@ -225,7 +225,7 @@ class ESCIEmbClassifierDataset(Dataset):
         self.use_chat_prompt = use_chat_prompt
 
         if use_chat_prompt:
-            # 和 reranker 一致的 system+user 包装
+            # emb + cls 不 拼接 system_prompt
             self.prefix = (
                 "<|im_start|>system\n"
                 + SYSTEM_PROMPT +
@@ -269,6 +269,4 @@ class ESCIEmbClassifierDataset(Dataset):
             "attention_mask": encoded["attention_mask"][0],
             "labels": torch.tensor(label_id, dtype=torch.long),
         }
-
-
 

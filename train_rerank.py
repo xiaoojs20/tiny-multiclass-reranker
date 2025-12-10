@@ -49,6 +49,13 @@ def parse_args():
     parser.add_argument("--lora_r", type=int, default=16)
     parser.add_argument("--lora_alpha", type=int, default=32)
     parser.add_argument("--lora_dropout", type=float, default=0.05)
+    parser.add_argument(
+        "--target_modules",
+        type=str,
+        nargs="+",                    
+        default=["q_proj", "v_proj"], 
+        help="List of target modules for LoRA (e.g. --target_modules q_proj v_proj gate_proj up_proj down_proj)",
+    )
 
     parser.add_argument("--seed", type=int, default=42)
 
@@ -105,19 +112,12 @@ def main():
         model.gradient_checkpointing_enable()
 
     print("Applying LoRA...")
+    print(f"target_modules: {args.target_modules}")
     lora_config = LoraConfig(
         r=args.lora_r,
         lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,
-        target_modules=[
-            "q_proj",
-            # "k_proj",
-            "v_proj",
-            # "o_proj",
-            # "gate_proj",
-            # "up_proj",
-            # "down_proj",
-        ],
+        target_modules=args.target_modules,
         task_type=TaskType.CAUSAL_LM,
         bias="none",
     )

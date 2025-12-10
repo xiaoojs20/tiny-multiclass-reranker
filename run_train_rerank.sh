@@ -32,7 +32,7 @@ LORA_ALPHA=16
 LORA_DROPOUT=0.05
 
 wandb_project="qwen3-multiclass-reranker"
-wandb_run_name="qwen3-esci-lora-v1"
+wandb_run_name="qwen3-esci-lora-mlp"
 
 # --eval_file "$EVAL_FILE" \
 
@@ -54,6 +54,7 @@ python train_rerank.py \
   --lora_r $LORA_R \
   --lora_alpha $LORA_ALPHA \
   --lora_dropout $LORA_DROPOUT \
+  --target_modules gate_proj up_proj down_proj \
   --bf16 \
   --report_to wandb \
   --wandb_project $wandb_project \

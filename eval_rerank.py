@@ -2,7 +2,7 @@
 
 import argparse
 from typing import List, Dict
-
+import random               
 import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -30,9 +30,18 @@ def parse_args():
     parser.add_argument("--bf16", action="store_true")
     parser.add_argument("--no_flash_attn", action="store_true")
     parser.add_argument("--save_scores_path", type=str, default=None)
+    parser.add_argument("--eval_ratio", type=float, default=1.0,
+                        help="整体测试集抽样比例(0,1]")
+    parser.add_argument("--seed", type=int, default=42, help="随机种子(用于抽样等)")
+
 
     return parser.parse_args()
 
+def set_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 def build_prefix_suffix() -> (str, str):
     from esci_dataset import SYSTEM_PROMPT
@@ -85,6 +94,8 @@ def build_inference_inputs(
 
 def main():
     args = parse_args()
+    set_seed(args.seed)
+
     print(f"Loading tokenizer from: {args.base_model}")
     tokenizer = AutoTokenizer.from_pretrained(args.base_model, padding_side="left")
     if tokenizer.pad_token is None:
@@ -118,7 +129,15 @@ def main():
     df_eval = load_esci_parquet(args.eval_file)
     print(f"Eval size: {len(df_eval)}")
 
-    # label 文本 -> token id（这里假设是单 token，大多数情况下是的）
+    if not (0.0 < args.eval_ratio <= 1.0):
+        raise ValueError(f"--eval_ratio 必须在 (0,1]，当前为 {args.eval_ratio}")
+    if args.eval_ratio < 1.0:
+        df_eval = df_eval.sample(frac=args.eval_ratio, random_state=args.seed).reset_index(drop=True)
+        print(f"[Eval Sampling] Using {len(df_eval)} rows (ratio={args.eval_ratio}, seed={args.seed})")
+    else:
+        print(f"[Eval Sampling] Using full set: {len(df_eval)} rows")
+
+    # label 文本 -> token id（如果>1 tokens 取第一个）
     label_tokens: Dict[str, int] = {
         k: tokenizer.encode(v, add_special_tokens=False)[0]
         for k, v in LABEL_TEXT.items()
@@ -231,24 +250,6 @@ def main():
         zero_division=0,   # 某类完全没预测到时不报错，F1=0
     )
     print(cls_report)
-
-    macro_f1 = f1_score(
-        all_trues_arr,
-        all_preds_arr,
-        labels=label_order,
-        average="macro",
-        zero_division=0,
-    )
-    weighted_f1 = f1_score(
-        all_trues_arr,
-        all_preds_arr,
-        labels=label_order,
-        average="weighted",
-        zero_division=0,
-    )
-    print(f"Macro-F1:    {macro_f1:.4f}")
-    print(f"Weighted-F1: {weighted_f1:.4f}")
-    print("===============================")
 
     # ===== 混淆矩阵：行是真实，列是预测 =====
     cm = confusion_matrix(
