@@ -1,8 +1,6 @@
-# train.py
-
 import argparse
 from pathlib import Path
-
+import os
 import torch
 from transformers import (
     AutoTokenizer,
@@ -11,13 +9,13 @@ from transformers import (
     Trainer,
 )
 from peft import LoraConfig, get_peft_model, TaskType
-import os
+
 
 from esci_dataset import (
     load_esci_parquet,
     ESCIMultiClassRerankDataset,
 )
-
+from utils import set_seed
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train Qwen3-0.6B on ESCI multi-class reranking (LoRA).")
@@ -84,6 +82,7 @@ def parse_args():
 
 def main():
     args = parse_args()
+    set_seed(args.seed)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 

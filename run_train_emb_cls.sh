@@ -5,7 +5,9 @@ export CUDA_VISIBLE_DEVICES=0,1
 export NCCL_P2P_DISABLE=1
 export NCCL_IB_DISABLE=1
 
-BASE_MODEL="../llms/Qwen/Qwen3-Embedding-0.6B"
+ARCH=decoder # ["decoder", "encoder"]
+BASE_MODEL="../llms/Qwen/Qwen3-Embedding-0.6B" # [Qwen/Qwen3-Embedding-0.6B, intfloat/multilingual-e5-large]
+# BASE_MODEL="../llms/intfloat/multilingual-e5-large"
 TRAIN_FILE="../datasets/esci-data/esci_multiclass_train.parquet"
 OUTPUT_DIR="./outputs/emb_esci_cls"
 MAX_LEN=512
@@ -14,10 +16,15 @@ WARMUP=0.03
 SCHEDULER="cosine"
 SAVE_TOTAL_LIMIT=-1
 
+
 # LoRA 超参
 LORA_R=16
 LORA_ALPHA=32
 LORA_DROPOUT=0.05
+TARGET_MODULES="gate_proj up_proj down_proj" # full="q_proj k_proj v_proj o_proj gate_proj up_proj down_proj"
+
+NUM_LABELS=4
+
 
 EPOCHS=1.0
 LOGGING_STEPS=100
@@ -47,7 +54,8 @@ python train_emb_cls.py \
   --lora_r $LORA_R \
   --lora_alpha $LORA_ALPHA \
   --lora_dropout $LORA_DROPOUT \
-  --target_modules gate_proj up_proj down_proj \
+  --target_modules $TARGET_MODULES \
+  --num_labels $NUM_LABELS \
   --logging_steps $LOGGING_STEPS \
   --save_steps $SAVE_STEPS \
   --save_total_limit $SAVE_TOTAL_LIMIT \

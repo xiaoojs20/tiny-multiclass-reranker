@@ -21,7 +21,7 @@ from esci_dataset import (
 )
 
 
-from emb_classifier import last_token_pool, QwenEmbeddingClassifier
+from models import QwenEmbeddingClassifier, E5EmbeddingClassifier
 
 
 def parse_args():
@@ -52,17 +52,19 @@ def parse_args():
     parser.add_argument("--eval_steps", type=int, default=200,
                         help="Run evaluation every N training steps when eval_dataset is provided.")
 
+    parser.add_argument("--arch", type=str, default="decoder",
+                    choices=["encoder", "decoder"],
+                    help="Model architecture type: encoder (e5) or decoder (qwen)")
+
     # LoRA
     parser.add_argument("--lora_r", type=int, default=16)
     parser.add_argument("--lora_alpha", type=int, default=32)
     parser.add_argument("--lora_dropout", type=float, default=0.05)
-    parser.add_argument(
-        "--target_modules",
-        type=str,
-        nargs="+",                    
-        default=["q_proj", "v_proj"], 
+    parser.add_argument("--target_modules", type=str, nargs="+", required=True,
         help="List of target modules for LoRA (e.g. --target_modules q_proj v_proj gate_proj up_proj down_proj)",
     )
+    parser.add_argument("--num_labels", type=int, required=True,  
+                        help="Number of classification labels (e.g., 4 for ESCI multi-class task).")
 
     parser.add_argument("--seed", type=int, default=42)
 
@@ -130,8 +132,12 @@ def main():
     encoder.print_trainable_parameters()
 
     # ===== Wrap into classifier =====
-    num_labels = 4  # E/S/C/I
-    model = QwenEmbeddingClassifier(encoder=encoder, num_labels=num_labels)
+    # num_labels = 4  # E/S/C/I
+    if args.arch == "encoder":
+        model = E5EmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+    else: # decoder
+        model = QwenEmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+
 
     for n, p in model.named_parameters():
         if p.requires_grad:

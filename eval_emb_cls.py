@@ -13,42 +13,39 @@ from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
 
 
-# 复用你项目里的这两个
 from esci_dataset import load_esci_parquet, ESCIEmbClassifierDataset
-from emb_classifier import QwenEmbeddingClassifier
+from models import QwenEmbeddingClassifier, E5EmbeddingClassifier
+from utils import set_seed
+
 
 def parse_args():
-    p = argparse.ArgumentParser("Evaluate QwenEmbeddingClassifier (LoRA on q/v)")
-    p.add_argument("--base_model", type=str, required=True,
-                   help="Qwen3-0.6B")
-    p.add_argument("--checkpoint_dir", type=str, required=True,
-                   help="包含 model.safetensors 的目录，如 ./emb_esci_cls/checkpoint-6000")
-    p.add_argument("--eval_file", type=str, required=True,
-                   help="评估 parquet 文件（与训练同格式）")
-    p.add_argument("--max_length", type=int, default=512)
-    p.add_argument("--per_device_eval_batch_size", type=int, default=256)
-    p.add_argument("--bf16", action="store_true")
-    p.add_argument("--no_flash_attn", action="store_true")
-    p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    parser = argparse.ArgumentParser("Evaluate QwenEmbeddingClassifier (LoRA on q/v)")
+    parser.add_argument("--base_model", type=str, required=True, help="Qwen/E5 model path or name")
+    parser.add_argument("--checkpoint_dir", type=str, required=True, help="Lora checkpoint dir")
+    parser.add_argument("--eval_file", type=str, required=True, help="eval data file")
+    parser.add_argument("--max_length", type=int, default=512)
+    parser.add_argument("--per_device_eval_batch_size", type=int, default=256)
+    parser.add_argument("--bf16", action="store_true")
+    parser.add_argument("--no_flash_attn", action="store_true")
+    parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--arch", type=str, default="decoder",
+                    choices=["encoder", "decoder"],
+                    help="Model architecture type: encoder (e.g. e5) or decoder (e.g. qwen3)")
     # LoRA 超参必须与训练一致
-    p.add_argument("--lora_r", type=int, default=16)
-    p.add_argument("--lora_alpha", type=int, default=32)
-    p.add_argument("--lora_dropout", type=float, default=0.05)
-
-    p.add_argument("--eval_ratio", type=float, default=1.0,
+    parser.add_argument("--lora_r", type=int, default=16)
+    parser.add_argument("--lora_alpha", type=int, default=32)
+    parser.add_argument("--lora_dropout", type=float, default=0.05)
+    parser.add_argument("--target_modules", type=str, nargs="+", required=True,
+        help="List of target modules for LoRA (e.g. --target_modules q_proj v_proj gate_proj up_proj down_proj)",
+    )
+    parser.add_argument("--eval_ratio", type=float, default=1.0,
                    help="评估集采样比例(0,1]，例如 0.1 表示抽样10%做评估")
-    p.add_argument("--seed", type=int, default=42, help="随机种子（影响采样、dataloader打乱等）")
+    parser.add_argument("--seed", type=int, default=42)
+
+    parser.add_argument("--num_labels", type=int, required=True,  
+                        help="Number of classification labels (e.g., 4 for ESCI multi-class task).")
     
-    return p.parse_args()
-
-def set_seed(seed: int):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-
+    return parser.parse_args()
 
 @torch.no_grad()
 def evaluate(model, dataloader, device):
@@ -124,11 +121,13 @@ def main():
 
     encoder = AutoModel.from_pretrained(args.base_model, **model_kwargs)
 
+    print("Applying LoRA adapters...")
+    print(f"target_modules: {args.target_modules}")
     lora_cfg = LoraConfig(
         r=args.lora_r,
         lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,
-        target_modules=["q_proj", "v_proj"],
+        target_modules=args.target_modules,
         task_type=TaskType.FEATURE_EXTRACTION,
         bias="none",
     )
@@ -136,7 +135,11 @@ def main():
 
     # 3) 包装分类器并加载 state_dict（safetensors）
     print("Wrapping into QwenEmbeddingClassifier...")
-    model = QwenEmbeddingClassifier(encoder=encoder, num_labels=4)  # E/S/C/I
+
+    if args.arch == "encoder":
+        model = E5EmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+    else: # decoder
+        model = QwenEmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
     # safetensors -> strict=True 可保证结构一致
     state = safe_load(str(model_path), device="cpu")
     missing, unexpected = model.load_state_dict(state, strict=False)

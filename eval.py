@@ -31,6 +31,20 @@ def parse_args():
     parser.add_argument("--no_flash_attn", action="store_true")
     parser.add_argument("--save_scores_path", type=str, default=None)
 
+    parser.add_argument("--arch", type=str, default="decoder",
+                    choices=["encoder", "decoder"],
+                    help="Model architecture type: encoder (e5) or decoder (qwen)")
+
+    parser.add_argument(
+        "--target_modules",
+        type=str,
+        nargs="+",                    
+        default=["q_proj", "v_proj"], 
+        help="List of target modules for LoRA (e.g. --target_modules q_proj v_proj gate_proj up_proj down_proj)",
+    )
+
+    parser.add_argument("--seed", type=int, default=42)
+
     return parser.parse_args()
 
 

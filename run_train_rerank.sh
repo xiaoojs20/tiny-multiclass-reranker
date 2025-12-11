@@ -30,6 +30,7 @@ EVAL_STEPS=500
 LORA_R=8
 LORA_ALPHA=16
 LORA_DROPOUT=0.05
+TARGET_MODULES="gate_proj up_proj down_proj" # full="q_proj k_proj v_proj o_proj gate_proj up_proj down_proj"
 
 wandb_project="qwen3-multiclass-reranker"
 wandb_run_name="qwen3-esci-lora-mlp"
@@ -54,7 +55,7 @@ python train_rerank.py \
   --lora_r $LORA_R \
   --lora_alpha $LORA_ALPHA \
   --lora_dropout $LORA_DROPOUT \
-  --target_modules gate_proj up_proj down_proj \
+  --target_modules $TARGET_MODULES \
   --bf16 \
   --report_to wandb \
   --wandb_project $wandb_project \
