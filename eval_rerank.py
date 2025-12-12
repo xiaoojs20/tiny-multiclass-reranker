@@ -1,4 +1,4 @@
-# eval.py
+# eval_rerank.py
 
 import argparse
 from typing import List, Dict

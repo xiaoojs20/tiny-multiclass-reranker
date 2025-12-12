@@ -1,3 +1,4 @@
+# eval_emb_cls.py
 import argparse
 from pathlib import Path
 import os
@@ -11,7 +12,7 @@ from peft import LoraConfig, get_peft_model, TaskType
 from safetensors.torch import load_file as safe_load
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from tqdm import tqdm
-
+from collections import Counter
 
 from esci_dataset import load_esci_parquet, ESCIEmbClassifierDataset
 from models import QwenEmbeddingClassifier, E5EmbeddingClassifier
@@ -41,9 +42,11 @@ def parse_args():
     parser.add_argument("--eval_ratio", type=float, default=1.0,
                    help="评估集采样比例(0,1]，例如 0.1 表示抽样10%做评估")
     parser.add_argument("--seed", type=int, default=42)
-
     parser.add_argument("--num_labels", type=int, required=True,  
                         help="Number of classification labels (e.g., 4 for ESCI multi-class task).")
+    parser.add_argument("--normalize_emb", action="store_true",
+        help="Whether to apply L2 normalization to embeddings before feeding into the classifier head.",
+    )
     
     return parser.parse_args()
 
@@ -84,6 +87,9 @@ def evaluate(model, dataloader, device):
 
     all_preds = torch.cat(all_preds).numpy()
     all_labels = torch.cat(all_labels).numpy()
+    
+    print("Pred label distribution:", Counter(all_preds))
+    print("True label distribution:", Counter(all_labels))
 
     acc = accuracy_score(all_labels, all_preds)
     f1_macro = f1_score(all_labels, all_preds, average="macro")
@@ -137,9 +143,11 @@ def main():
     print("Wrapping into QwenEmbeddingClassifier...")
 
     if args.arch == "encoder":
-        model = E5EmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+        print("Using E5EmbeddingClassifier")
+        model = E5EmbeddingClassifier(encoder=encoder, num_labels=args.num_labels, normalize_emb=args.normalize_emb)
     else: # decoder
-        model = QwenEmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+        print("Using QwenEmbeddingClassifier")
+        model = QwenEmbeddingClassifier(encoder=encoder, num_labels=args.num_labels, normalize_emb=args.normalize_emb)
     # safetensors -> strict=True 可保证结构一致
     state = safe_load(str(model_path), device="cpu")
     missing, unexpected = model.load_state_dict(state, strict=False)
@@ -149,7 +157,8 @@ def main():
         print("[Warn] unexpected keys:", unexpected)
 
     device = torch.device(args.device)
-    model.to(device)
+    # model.to(device)
+    model = model.to(device=device, dtype=dtype)
 
     # 4) 构造评估集
     print(f"Loading eval data from: {args.eval_file}")

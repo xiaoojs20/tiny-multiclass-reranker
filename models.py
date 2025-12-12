@@ -7,8 +7,15 @@ from transformers import AutoModel, AutoTokenizer
 # MODEL_NAME = "../llms/Qwen/Qwen3-Embedding-0.6B"
 # MODEL_NAME = "../llms/Qwen/Qwen3-0.6B"
 
+"""
+用到的几个模型
+Qwen3-Embedding-0.6B: https://huggingface.co/Qwen/Qwen3-Embedding-0.6B
+multilingual-e5-large: https://huggingface.co/intfloat/multilingual-e5-large
+"""
+
+
 def last_token_pool(last_hidden_states, attention_mask):
-    """ e.g. Qwen3-Emedding, https://huggingface.co/Qwen/Qwen3-Embedding-8B
+    """ e.g. Qwen3-Emedding
     last token 池化：取 [batch, seq_len, hidden] 中 attention mask 最后一个为 True 的 token
     Args:
         last_hidden_states: [batch, seq_len, hidden]

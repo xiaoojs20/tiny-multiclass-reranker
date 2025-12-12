@@ -2,7 +2,6 @@
 import argparse
 from pathlib import Path
 import os
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -19,8 +18,6 @@ from esci_dataset import (
     load_esci_parquet,
     ESCIEmbClassifierDataset,
 )
-
-
 from models import QwenEmbeddingClassifier, E5EmbeddingClassifier
 
 
@@ -30,6 +27,8 @@ def parse_args():
     parser.add_argument("--base_model", type=str, required=True,
                         help="Path or name of Qwen3-Embedding-0.6B model.")
     parser.add_argument("--train_file", type=str, required=True)
+    parser.add_argument("--data_ratio", type=float, default=1.0, 
+                        help="Ratio of training data to use (e.g. 1.0 for all data).")
     parser.add_argument("--eval_ratio", type=float, default=0.05,
                         help="Ratio of training data to use as eval set (e.g. 0.05 for 5%).")
     parser.add_argument("--output_dir", type=str, required=True)
@@ -65,27 +64,19 @@ def parse_args():
     )
     parser.add_argument("--num_labels", type=int, required=True,  
                         help="Number of classification labels (e.g., 4 for ESCI multi-class task).")
-
+    parser.add_argument("--normalize_emb", action="store_true",
+        help="Whether to apply L2 normalization to embeddings before feeding into the classifier head.",
+    )
     parser.add_argument("--seed", type=int, default=42)
 
     # Logging & reporting
-    parser.add_argument(
-        "--report_to",
-        type=str,
-        default="none",
-        choices=["none", "wandb"],
+    parser.add_argument("--report_to", type=str, default="none", choices=["none", "wandb"],
         help='Where to report training logs. Use "wandb" to enable Weights & Biases logging.',
     )
-    parser.add_argument(
-        "--wandb_project",
-        type=str,
-        default=None,
+    parser.add_argument("--wandb_project", type=str, default=None,
         help="Wandb project name. If None, will use WANDB_PROJECT env var if set.",
     )
-    parser.add_argument(
-        "--wandb_run_name",
-        type=str,
-        default=None,
+    parser.add_argument( "--wandb_run_name", type=str, default=None,
         help="Wandb run name (also used as TrainingArguments.run_name).",
     )
 
@@ -134,9 +125,9 @@ def main():
     # ===== Wrap into classifier =====
     # num_labels = 4  # E/S/C/I
     if args.arch == "encoder":
-        model = E5EmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+        model = E5EmbeddingClassifier(encoder=encoder, num_labels=args.num_labels, normalize_emb=args.normalize_emb)
     else: # decoder
-        model = QwenEmbeddingClassifier(encoder=encoder, num_labels=args.num_labels)
+        model = QwenEmbeddingClassifier(encoder=encoder, num_labels=args.num_labels, normalize_emb=args.normalize_emb)
 
 
     for n, p in model.named_parameters():
@@ -149,11 +140,19 @@ def main():
     print(f"Loading train data from: {args.train_file}")
     df_all = load_esci_parquet(args.train_file)
     print(f"Total size: {len(df_all)}")
-
+    # train data ratio
+    if not (0.0 < args.data_ratio <= 1.0):
+        raise ValueError(f"data_ratio must be in (0,1], got {args.data_ratio}")
+    if args.data_ratio < 1.0:
+        orig_size = len(df_all)
+        df_all = df_all.sample(frac=args.data_ratio, random_state=args.seed).reset_index(drop=True)
+        print(f"[DataRatio] Using {len(df_all)} / {orig_size} samples (ratio={args.data_ratio})")
+    else:
+        print(f"[DataRatio] Using full dataset ({len(df_all)} samples)")
+    # eval data ratio
     eval_ratio = args.eval_ratio
     if not (0.0 <= eval_ratio < 1.0):
         raise ValueError(f"eval_ratio must be in [0,1), got {eval_ratio}")
-
     if eval_ratio > 0.0:
         df_all_shuffled = df_all.sample(frac=1.0, random_state=args.seed).reset_index(drop=True)
         eval_size = int(len(df_all_shuffled) * eval_ratio)
